@@ -1,30 +1,31 @@
 import React from "react";
 import axios from "axios";
-import DataTable from "react-data-table-component";
-import logo from "./logo.svg";
+
+import { DataGrid } from '@material-ui/data-grid';
+// import logo from "./logo.svg";
 import "./App.css";
 
 const columns = [
+  // { field: 'id', headerName: 'ID', width: 70 },
   {
-    name: 'Name',
-    selector: 'name',
-    sortable: true,
+    headerName: 'Name',
+    field: 'name',
+    width: 200
   },
   {
-    name: 'Email',
-    selector: 'email',
-    sortable: true,
-    right: true,
+    headerName: 'Email',
+    field: 'email',
+    width: 240
   },
   {
-    name: 'Gender',
-    selector: 'gender',
-    sortable: true,
+    headerName: 'Gender',
+    field: 'gender',
+    width: 130
   },
   {
-    name: 'Cell',
-    selector: 'cell',
-    sortable: true,
+    headerName: 'Cell',
+    field: 'cell',
+    width: 150
   }
 ];
 
@@ -51,15 +52,11 @@ class App extends React.Component {
 
         for (i = 0; i < response.data.results.length; i++) {
           console.log(response.data.results[i].name.first);
-
+          
           list.push({
             id: i,
-            name:
-              response.data.results[i].name.title +
-              " " +
-              response.data.results[i].name.first +
-              " " +
-              response.data.results[i].name.last,
+            name:response.data.results[i].name.first +
+              " " + response.data.results[i].name.last +" ("+response.data.results[i].name.title+")",
             email: response.data.results[i].email,
             gender: response.data.results[i].gender,
             cell: response.data.results[i].cell,
@@ -75,23 +72,23 @@ class App extends React.Component {
       });
   }
 
+  handleSort = (key, asc) => {
+    let employeeSorted = [...this.state.employeeList];
+    
+    // sort by key and asc
+    employeeSorted.sort((a, b) => {
+      return a[key] > b[key] ? asc * 1 : asc * -1;
+    });
+
+    // set the state
+    this.setState({ employeeList: employeeSorted });
+  }
   render() {
     return (
       <div>
-        {/* {this.state.employeeList.map((employee, index)=>{
-        return (
-          <h1 key={index}>
-          
-            {employee.name.first}
-            </h1>
-        )
-      })} */}
-        <DataTable
-          title="Arnold Movies"
-          columns={columns}
-          data={this.state.employeeList}
-          // customStyles={customStyles}
-        />
+        <div style={{ height: "900px", width: 800 }}>
+        <DataGrid rows={this.state.employeeList} columns={columns} pageSize={10} />
+        </div>
       </div>
     );
   }
